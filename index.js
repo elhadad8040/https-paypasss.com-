@@ -6,7 +6,15 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const app = express();
-app.use(cors());
+
+// CORS configuration
+app.use(cors({
+  origin: ['http://localhost:3000', 'http://localhost:8080', 'http://localhost:5000', 'https://paypass-app.vercel.app', 'https://paypass-app-git-main.vercel.app'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
+
 app.use(express.json());
 
 // Simple test route
@@ -14,7 +22,7 @@ app.get('/', (req, res) => {
   res.json({ 
     message: 'PayPass Backend is running!',
     status: 'success',
-    timestamp: new Date().toISOString()
+    timestamp: '2025-07-28T04:22:21.148Z'
   });
 });
 
@@ -76,8 +84,22 @@ app.get('/api/washing-places', (req, res) => {
   ]);
 });
 
-// Routes (commented out until database is connected)
-// app.use('/api', require('./routes/index'));
+// API Routes
+app.use('/api', require('./routes/index'));
+
+// Test API routes for development
+app.get('/api/test', (req, res) => {
+  res.json({ 
+    message: 'API is working!',
+    endpoints: {
+      packages: '/api/packages',
+      washingPlaces: '/api/washing-places',
+      users: '/api/users',
+      cars: '/api/cars',
+      washes: '/api/washes'
+    }
+  });
+});
 
 // Error handler
 app.use((err, req, res, next) => {
@@ -87,8 +109,8 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 PayPass Backend running on port ${PORT}`);
-  console.log(`📱 Test the API: http://localhost:${PORT}/api/test`);
-  console.log(`📦 Packages: http://localhost:${PORT}/api/packages`);
-  console.log(`🏪 Washing Places: http://localhost:${PORT}/api/washing-places`);
+  console.log(`📱 Test the API: https://https-paypasss-com.vercel.app/api/test`);
+  console.log(`📦 Packages: https://https-paypasss-com.vercel.app/api/packages`);
+  console.log(`🏪 Washing Places: https://https-paypasss-com.vercel.app/api/washing-places`);
   console.log(`⚠️  Running in TEST MODE without database`);
 }); 
